@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PalirmoHuB — ExclusivE Content Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .header-gradient {
+            background: linear-gradient(135deg, #6b21a8 0%, #7e22ce 100%);
+            box-shadow: 0 4px 20px rgba(107, 33, 168, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .search-box {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+        }
+
+        .search-box:focus-within {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(216, 180, 254, 0.5);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(90deg, #e9d5ff 0%, #fae8ff 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover:after {
+            width: 100%;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(237, 233, 254, 0.5);
+        }
+
+        .content-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(124, 58, 237, 0.15);
+            border-color: rgba(216, 180, 254, 0.8);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            bottom: -50%;
+            left: -50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%);
+            transform: rotateZ(60deg) translate(-1em, 7.5em);
+        }
+
+        .btn-primary:hover:after {
+            animation: shine 1.5s forwards;
+        }
+
+        @keyframes shine {
+            100% {
+                transform: rotateZ(60deg) translate(1em, -7.5em);
+            }
+        }
+
+        .trust-badge {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(237, 233, 254, 0.8);
+        }
+
+        .trust-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(124, 58, 237, 0.1);
+        }
+
+        .preview-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .play-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .featured-card {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(237, 233, 254, 0.7);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .content-section {
+            background: linear-gradient(to bottom, #faf5ff 0%, white 100%);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .page-item {
+            margin: 0 0.25rem;
+        }
+
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background-color: #f3f4f6;
+            color: #7e22ce;
+        }
+
+        .page-link.active {
+            background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
+        }
+
+        .page-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Dark Header -->
+    <header class="header-gradient sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                        <i class="fas fa-crown text-purple-200 text-lg"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white">
+                        <span class="gradient-text">Palirmo</span><span class="text-white">Hub</span>
+                    </h1>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="nav-link text-purple-100 hover:text-white font-medium">
+                        <i class="fas fa-home mr-2"></i> Home
+                    </a>
+                    <a href="#" class="nav-link text-purple-100 hover:text-white font-medium">
+                        <i class="fas fa-photo-video mr-2"></i> Content
+                    </a>
+                    <a href="#" class="nav-link text-purple-100 hover:text-white font-medium">
+                        <i class="fas fa-gem mr-2"></i> Premium
+                    </a>
+                    <a href="#" class="nav-link text-purple-100 hover:text-white font-medium">
+                        <i class="fas fa-user-shield mr-2"></i> Account
+                    </a>
+                </nav>
+
+                <!-- Search and Menu -->
+                <div class="flex items-center space-x-4">
+                    <div class="search-box rounded-full px-4 py-2 flex items-center">
+                        <i class="fas fa-search text-purple-100 mr-2"></i>
+                        <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none text-white placeholder-purple-200 w-32 md:w-40 transition-all duration-300">
+                    </div>
+                    <button class="md:hidden text-white text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen pb-12">
+        <!-- Exclusive Content Section -->
+        <section class="content-section py-8">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Exclusive Leaked Content</h2>
+                        <p class="text-purple-600 font-medium mt-1 page-title">@EMA STON - الصفحة 1</p>
+                    </div>
+                    <a href="#" class="text-sm text-purple-600 hover:text-purple-800 font-medium">
+                        View All <i class="fas fa-chevron-right ml-1"></i>
+                    </a>
+                </div>
+
+                <!-- الصفحة 1 - بطاقتين فقط -->
+                <div class="page-content active" id="page-1">
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- البطاقة 1 -->
+                        <div class="content-card overflow-hidden">
+                            <img src="https://i.postimg.cc/FRPGcGNY/a5.png" alt="Content preview" class="w-full h-40 object-cover">
+                            <div class="p-3">
+                                <h3 class="font-medium text-gray-800">Premium Set 01</h3>
+                                <p class="text-sm text-gray-500">50+ Photos</p>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <span class="text-xs text-purple-600 font-medium">High Quality</span>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">New</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- البطاقة 2 -->
+                        <div class="content-card overflow-hidden">
+                            <img src="https://i.postimg.cc/fW8TxHtx/a3.png" alt="Content preview" class="w-full h-40 object-cover">
+                            <div class="p-3">
+                                <h3 class="font-medium text-gray-800">Premium Set 02</h3>
+                                <p class="text-sm text-gray-500">11 Videos</p>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <span class="text-xs text-purple-600 font-medium">HD 1080p</span>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Popular</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الصفحة 2 - بطاقتين فقط -->
+                <div class="page-content" id="page-2">
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- البطاقة 1 -->
+                        <div class="content-card overflow-hidden">
+                            <img src="https://i.postimg.cc/ZRT4N3J7/a6.png" alt="Content preview" class="w-full h-40 object-cover">
+                            <div class="p-3">
+                                <h3 class="font-medium text-gray-800">Premium Set 03</h3>
+                                <p class="text-sm text-gray-500">20 Videos</p>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <span class="text-xs text-purple-600 font-medium">Full HD</span>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Trending</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- البطاقة 2 -->
+                        <div class="content-card overflow-hidden">
+                            <img src="https://i.postimg.cc/fT3ZYMhN/a2.png" alt="Content preview" class="w-full h-40 object-cover">
+                            <div class="p-3">
+                                <h3 class="font-medium text-gray-800">Premium Set 04</h3>
+                                <p class="text-sm text-gray-500">Full Package</p>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <span class="text-xs text-purple-600 font-medium">4K + HD</span>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Exclusive</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الصفحة 3 - بطاقتين فقط -->
+                <div class="page-content" id="page-3">
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- البطاقة 1 -->
+                        <div class="content-card overflow-hidden">
+                            <img src="https://i.postimg.cc/bvKKCHRN/85339396.webp" alt="Content preview" class="w-full h-40 object-cover">
+                            <div class="p-3">
+                                <h3 class="font-medium text-gray-800">Premium Set 05</h3>
+                                <p class="text-sm text-gray-500">35+ Photos</p>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <span class="text-xs text-purple-600 font-medium">High Quality</span>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">New</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- البطاقة 2 -->
+                        <div class="content-card overflow-hidden">
+                            <img src="https://i.postimg.cc/pT3znyxS/m-eaf-T8f-mh-Aez8-HEAR7-Am-Tiyl-F-7.jpg" alt="Content preview" class="w-full h-40 object-cover">
+                            <div class="p-3">
+                                <h3 class="font-medium text-gray-800">Premium Set 06</h3>
+                                <p class="text-sm text-gray-500">15 Videos</p>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <span class="text-xs text-purple-600 font-medium">HD 1080p</span>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Popular</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Content Section -->
+        <section class="py-12 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="max-w-3xl mx-auto">
+                    <div class="content-card p-6 mb-8 featured-card">
+                        <div class="relative rounded-xl overflow-hidden mb-6 h-48 md:h-64 bg-gradient-to-r from-purple-500 to-pink-500">
+                            <img src="https://i.postimg.cc/FRPGcGNY/a5.png" alt="Video Preview" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 preview-overlay flex items-center justify-center">
+                                <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button">
+                                    <i class="fas fa-play text-purple-600 text-2xl"></i>
+                                </div>
+                            </div>
+                            <span class="absolute bottom-4 right-4 bg-black/80 px-3 py-1 rounded-full text-xs text-white font-medium">PREVIEW</span>
+                        </div>
+
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Exclusive Content Package</h2>
+
+                        <p class="mb-6 text-gray-600 leading-relaxed">Get instant access to this premium content package by completing a quick verification. The ZIP file contains high-quality exclusive content not available anywhere else.</p>
+
+                        <div class="mb-6 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-purple-500 flex-shrink-0"></div>
+                                <span class="text-gray-700">50+ High Quality Photos (4K Resolution)</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-purple-500 flex-shrink-0"></div>
+                                <span class="text-gray-700">38 HD Videos </span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-purple-500 flex-shrink-0"></div>
+                                <span class="text-gray-700">Exclusive Behind-the-Scenes Content</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-purple-500 flex-shrink-0"></div>
+                                <span class="text-gray-700">900 MB Total Size (Optimized for Fast Download)</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <a href="#" class="btn-primary block text-center text-white py-3 rounded-lg font-semibold relative overflow-hidden">
+                                <i class="fas fa-download mr-2"></i> Download ZIP 
+                            </a>
+                            <p class="text-center text-sm text-gray-500">
+                                <i class="fas fa-shield-alt mr-1"></i> Secure verification required
+                            </p>
+                            
+                            <!-- الترقيم هنا تحت زر التنزيل مباشرة -->
+                            <div class="pagination mt-8">
+                                <ul class="flex items-center space-x-1">
+                                    <li class="page-item">
+                                        <a href="#" class="page-link prev disabled">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a href="#" class="page-link active" data-page="1">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a href="#" class="page-link" data-page="2">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a href="#" class="page-link" data-page="3">3</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a href="#" class="page-link next">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <div class="trust-badge rounded-full px-4 py-2 text-sm flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-purple-600"></i>
+                            <span class="text-gray-700">Secure Access</span>
+                        </div>
+                        <div class="trust-badge rounded-full px-4 py-2 text-sm flex items-center gap-2">
+                            <i class="fas fa-bolt text-purple-600"></i>
+                            <span class="text-gray-700">Instant Delivery</span>
+                        </div>
+                        <div class="trust-badge rounded-full px-4 py-2 text-sm flex items-center gap-2">
+                            <i class="fas fa-star text-purple-600"></i>
+                            <span class="text-gray-700">Premium Quality</span>
+                        </div>
+                        <div class="trust-badge rounded-full px-4 py-2 text-sm flex items-center gap-2">
+                            <i class="fas fa-lock text-purple-600"></i>
+                            <span class="text-gray-700">Private Access</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageTitle = document.querySelector('.page-title');
+            
+            function showPage(pageNumber) {
+                // إخفاء جميع الصفحات
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // عرض الصفحة المطلوبة
+                document.getElementById(`page-${pageNumber}`).classList.add('active');
+                
+                // تحديث الترقيم
+                document.querySelectorAll('.page-link').forEach(link => {
+                    link.classList.remove('active');
+                    if(link.getAttribute('data-page') == pageNumber) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                // تحديث عنوان الصفحة
+                pageTitle.textContent = `@EMA STON - الصفحة ${pageNumber}`;
+                
+                // تحديث أزرار السابق/التالي
+                document.querySelector('.prev').classList.toggle('disabled', pageNumber == 1);
+                document.querySelector('.next').classList.toggle('disabled', pageNumber == 3);
+            }
+
+            // أحداث النقر على أرقام الصفحات
+            document.querySelectorAll('.page-link[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPage(parseInt(this.getAttribute('data-page')));
+                });
+            });
+
+            // أحداث السابق/التالي
+            document.querySelector('.prev').addEventListener('click', function(e) {
+                e.preventDefault();
+                const current = parseInt(document.querySelector('.page-link.active').getAttribute('data-page'));
+                if(current > 1) showPage(current - 1);
+            });
+
+            document.querySelector('.next').addEventListener('click', function(e) {
+                e.preventDefault();
+                const current = parseInt(document.querySelector('.page-link.active').getAttribute('data-page'));
+                if(current < 3) showPage(current + 1);
+            });
+
+            // عرض الصفحة الأولى عند التحميل
+            showPage(1);
+        });
+    </script>
+</body>
+</html>
